@@ -1,1 +1,1 @@
-{"virtualbox":{"/vagrant":{"guestpath":"/vagrant","hostpath":"D:/Projects/lab-redes/vagrant","disabled":false,"__vagrantfile":true}}}
+{"virtualbox":{"/home/vagrant/app":{"guestpath":"/home/vagrant/app","hostpath":"D:/Projects/lab-redes/app","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"D:/Projects/lab-redes/vagrant","disabled":false,"__vagrantfile":true}}}
