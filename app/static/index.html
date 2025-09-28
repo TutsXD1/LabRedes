@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Tráfego</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="chart-container">
+            <div class="chart-header">
+                <h1 id="chart-title">Análise de Tráfego por Cliente (últimos 5s)</h1>
+                <button id="back-button" class="hidden">Voltar</button>
+            </div>
+            <canvas id="trafficChart"></canvas>
+        </div>
+        <div class="side-panel">
+            <div class="info-box">
+                <h2>Tráfego Total na Rede</h2>
+                <p id="total-traffic-display">Calculando...</p>
+            </div>
+            <div class="history-box">
+                <h2>Histórico de Pacotes</h2>
+                <div id="packet-history-log"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
