@@ -1,0 +1,64 @@
+#vagrant/Vagrantfile
+
+Vagrant.configure("2") do |config|
+    # Imagem base para todas VMs
+    config.vm.box = "ubuntu/jammy64"
+
+    # --- 1. Configuração do Host de Análise ---
+    config.vm.define "analysis-host" do |analysis|
+        analysis.vm.hostname = "analysis-host"
+
+        # Configuração de rede privada
+        analysis.vm.network "private_network", ip: "192.168.100.10"
+
+        analysis.vm.network "forwarded_port", guest: 8000, host: 8080
+
+        # Configuração para o VirtualBox
+        analysis.vm.provider "virtualbox" do |vb|
+            # Permitir modo promíscuo na segunda interface de rede (capitura todo o tráfego)
+            vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+            vb.name = "analysis-host"
+            vb.memory = "1024"
+        end
+        
+        #Executa script de provisionamento
+        analysis.vm.provision "shell", path: "provision/provision-analysis-host.sh"
+    end
+
+    # --- 2. Configuração do Servidor ---
+    config.vm.define "server" do |srv|
+        srv.vm.hostname = "server"
+
+        # Configuração de rede privada
+        srv.vm.network "private_network", ip: "192.168.100.11"
+
+        srv.vm.provision "shell", path: "provision/provision-server.sh"
+
+        # Copia os arquivos para dentro da VM
+        srv.vm.provision "file", source: "assets/gato_dir.txt", destination: "/tmp/gato_dir.txt"
+        srv.vm.provision "file", source: "assets/gato_esq.txt", destination: "/tmp/gato_esq.txt"
+
+        # Move os arquivos para o lugar certo (pois a cópia inicial é feita com o usuário 'vagrant')
+        srv.vm.provision "shell", inline: "sudo mv /tmp/gato_*.txt /var/www/html/"
+
+        srv.vm.provider "virtualbox" do |vb|
+            vb.name = "server"
+            vb.memory = "512"
+        end
+    end
+
+    # --- 3. Configuração dos Clientes ---
+    (1..3).each do |i|
+        config.vm.define "client-0#{i}" do |client|
+            client.vm.hostname = "client-0#{i}"
+            client.vm.network "private_network", ip: "192.168.100.1#{i+1}"
+            # Mesmo script de provisionamento para todos os clientes
+            client.vm.provision "shell", path: "provision/provision-client.sh"
+
+            client.vm.provider "virtualbox" do |vb|
+                vb.name = "client-0#{i}"
+                vb.memory = "512"
+            end 
+        end
+    end
+end
